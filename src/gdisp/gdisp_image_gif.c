@@ -21,6 +21,8 @@
 #define GIF_CODE_FIRST			(GIF_CODE_MAX+2)			// Illegal code to signal first
 #define GIF_CODE_NONE			(GIF_CODE_MAX+3)			// Illegal code to signal empty
 
+#define SWAPBYTES(i) ((i>>8) | (i<<8))
+
 // Convert bits to masks for that number of bits
 static const uint16_t GifBitMask[] = {
 		0x0000, 0x0001, 0x0003, 0x0007,
@@ -565,7 +567,7 @@ gdispImageError gdispImageOpen_GIF(gdispImage *img) {
 		for(aword = 0; aword < priv->palsize; aword++) {
 			if (gfileRead(img->f, &priv->buf, 3) != 3)
 				goto baddatacleanup;
-			priv->palette[aword] = RGB2COLOR(((uint8_t *)priv->buf)[0], ((uint8_t *)priv->buf)[1], ((uint8_t *)priv->buf)[2]);
+			priv->palette[aword] = SWAPBYTES(RGB2COLOR(((uint8_t *)priv->buf)[0], ((uint8_t *)priv->buf)[1], ((uint8_t *)priv->buf)[2]));
 		}
 	}
 	priv->bgcolor = ((uint8_t *)priv->buf)[5];
